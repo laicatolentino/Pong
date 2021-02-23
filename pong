@@ -1,0 +1,162 @@
+int playerOneX, playerOneY;
+int playerTwoX, playerTwoY;
+int paddleWidth, paddleHeight, paddleSpeed;
+
+int ballX, ballY, ballHeight, ballWidth, speedX, speedY;
+
+boolean playerOneUp, playerOneDown;
+
+boolean playerTwoUp, playerTwoDown;
+
+color playerOneColor = color(255,0,0);
+color playerTwoColor = color(255,0,0);
+
+float ballShootX, ballShootY;
+
+int playerOneScore = 0;
+int playerTwoScore = 0;
+
+void setup(){
+  size(500,500);
+ // fullScreen();
+  ballX = width/2;
+  ballY = height/2;
+  ballWidth = 50;
+  ballHeight = 50;
+  speedX = 2;
+  speedY = 2;
+  
+  ballShootX = random(1,4);
+  ballShootY = random(1,4);
+
+  paddleWidth = 30;
+  paddleHeight = 100;
+  paddleSpeed = 5;
+  
+  playerOneX = 40;
+  playerOneY = height/2 - paddleHeight/2;
+  
+  playerTwoX = 430;
+  playerTwoY = height/2 - paddleHeight/2;
+
+}
+
+void draw(){
+  background(0);
+  
+  drawBall();
+  moveBall();
+  ballBounce();
+  drawPaddles();
+  movePaddles();
+  contactPaddle();
+  scores();
+}
+
+void drawPaddles(){
+  fill(playerOneColor);
+  rect(playerOneX, playerOneY, paddleWidth, paddleHeight);
+  
+  fill(playerTwoColor);
+  rect(playerTwoX, playerTwoY, paddleWidth, paddleHeight);
+}
+
+void movePaddles(){
+  if(playerOneUp){
+    playerOneY = playerOneY - paddleSpeed;
+  }
+  if(playerOneDown){
+    playerOneY = playerOneY + paddleSpeed;
+  }
+  
+  if(playerTwoUp){
+    playerTwoY = playerTwoY - paddleSpeed;
+  }
+  if(playerTwoDown){
+    playerTwoY = playerTwoY + paddleSpeed;
+  }
+}
+
+void moveBall(){
+  ballX += speedX*ballShootX;
+  ballY += speedY*ballShootY;
+}
+
+
+void ballBounce(){
+  if(ballX > width - ballWidth){
+    speedX = -speedX;
+    playerOneScore += 1;
+    if(playerOneScore == 5) {
+    speedX = 0;
+    speedY = 0;
+    playerOneScore = 0;
+    }
+  } else if(ballX < 0){
+    speedX = -speedX;
+    playerTwoScore += 1;
+    if(playerTwoScore == 5) {
+    speedX = 0;
+    speedY = 0; 
+    playerTwoScore = 0;
+    }
+  }
+  
+  if(ballY > height - ballHeight || ballY < 0){
+    speedY = -speedY;
+  }
+}
+
+void drawBall(){
+  fill(255);
+  ellipse(ballX, ballY, ballWidth, ballHeight);
+}
+
+
+void contactPaddle(){
+  if(ballX - ballWidth/2 < playerOneX + paddleWidth && ballY < playerOneY + paddleHeight && ballY > playerOneY){
+    speedX = -speedX;
+  }
+   if(ballX - ballWidth/2 > playerTwoX - paddleWidth*2 && ballY < playerTwoY + paddleHeight && ballY > playerTwoY){
+    speedX = -speedX;
+  }
+}
+
+void scores(){
+  fill(255);
+  text(playerOneScore, 100, 50);
+  
+  fill(255);
+  text(playerTwoScore, 400, 50);
+}
+
+void keyPressed(){
+  if(key == 'w' || key == 'W'){
+    playerOneUp = true;
+  }
+  if(key == 's' || key == 'S'){
+    playerOneDown = true;
+  }
+  
+  if(key == 'i' || key == 'I'){
+    playerTwoUp = true;
+  }
+  if(key == 'k' || key == 'K'){
+    playerTwoDown = true;
+  }
+}
+
+void keyReleased(){
+  if(key == 'w' || key == 'W'){
+    playerOneUp = false;
+  }
+  if(key == 's' || key == 'S'){
+    playerOneDown = false;
+  }
+  if(key == 'i' || key == 'I'){
+    playerTwoUp = false;
+  }
+  if(key == 'k' || key == 'K'){
+    playerTwoDown = false;
+  }
+}
